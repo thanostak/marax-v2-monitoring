@@ -605,7 +605,7 @@
         "type": "influxdb",
         "uid": "P951FEA4DE68E13C5"
       },
-      "description": "Xmode Coffee or Steam, 0 is Coffee 1 is Steam",
+      "description": "Currently brewing or not",
       "fieldConfig": {
         "defaults": {
           "mappings": [
@@ -613,11 +613,11 @@
               "options": {
                 "0": {
                   "index": 0,
-                  "text": "Coffee"
+                  "text": "Off"
                 },
                 "1": {
                   "index": 1,
-                  "text": "Steam"
+                  "text": "On"
                 }
               },
               "type": "value"
@@ -705,11 +705,11 @@
           "tags": []
         }
       ],
-      "title": "Xmode",
+      "title": "Brewing",
       "type": "stat"
     }
   ],
-  "refresh": "auto",
+  "refresh": "5s",
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
@@ -717,7 +717,7 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {
@@ -737,6 +737,6 @@
   "timezone": "",
   "title": "Overview",
   "uid": "0VkxsAigz",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
