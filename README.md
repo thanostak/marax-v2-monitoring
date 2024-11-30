@@ -1,12 +1,12 @@
 # Mara X Monitoring
 
-![Granfana Preview](./preview.png "Granfana Preview")
+![Granfana Preview](./Preview_V2.png "Granfana Preview")
 
 Capture temperature data from a Lelit Mara X espresso machine via a serial connection and persist in a database and expose via grafana.
 
 Docker will persist DB storage using volumes so restarts won't cause data loss.
 
-Tested on a Raspberry Pi (Raspberry Pi OS Stable - Debian 11 Bullseye).
+Tested on a Raspberry Pi 3b+ (Raspberry Pi OS Stable - 12 Bookworm).
 
 All credit to the author of this [post](https://www.reddit.com/r/espresso/comments/hft5zv/data_visualisation_lelit_marax_mod/) for doing so much of the ground work!
 
@@ -41,8 +41,8 @@ Alternatively, setup [tailscale](https://tailscale.com/) for access from outside
 
 ## What do I need?
 
-- Lelit Mara X PL62 espresso machine ([link](https://marax.lelit.com/index-eng.html))
-- Serial to USB cable ([link](https://www.amazon.co.uk/gp/product/B01N4X3BJB/ref=ppx_yo_dt_b_asin_title_o06_s00?ie=UTF8&psc=1))
+- Lelit Mara X V2 espresso machine ([link](https://marax.lelit.com/index-eng.html))
+- Serial to USB cable ([link](https://amzn.eu/d/3va2gX6))
 - Computer capable of running linux / docker, like a raspberry pi ([link](https://www.raspberrypi.org/products/raspberry-pi-4-model-b/))
 
 ## Other

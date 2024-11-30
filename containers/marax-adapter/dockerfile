@@ -1,6 +1,7 @@
 FROM alpine:3.18
 
 RUN apk --no-cache add alpine-conf \
+    && apk add bash \
 	&& setup-timezone -z UTC \
 	&& apk del alpine-conf \
 	&& apk --no-cache add screen
