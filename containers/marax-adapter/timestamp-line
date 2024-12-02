@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Sample LINE (latter from newer version)
 # C1.19,085,116,068,0000,0
@@ -18,7 +18,7 @@ COUNTER=0
 while read -r LINE; do
   if echo "$LINE" | grep -Eq "[^,]+,\d{3},\d{3},\d{3},\d{4},\d{1},\d{1}"; then
     if [[ $(echo "$LINE" | awk -F ',' '{print $7}') == 1 ]]; then
-      COUNTER+=1
+      ((COUNTER++))
     else
       COUNTER=0
     fi
