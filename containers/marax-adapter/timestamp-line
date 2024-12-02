@@ -1,10 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
 # Sample LINE (latter from newer version)
 # C1.19,085,116,068,0000,0
 # C123b,085,116,068,0000,0
-# V2
-# +1.10,118,128,092,0000,0,0
 #
 # LINE parts (separated by ,) parsed as:
 #   - +1.10 - Firmware version number
@@ -13,16 +11,11 @@
 #   - 068   - real/actual heat exchanger temperature in Celsius
 #   - 0000  - countdown used to track if the machine is in "fast heating" mode, it seems to go anywhere from 1500-0. 0 means it's no longer boosting
 #   - 0     - heating element on/off, 0 is off, 1 is on
-#   - 0     - Pump on or off. 1 is on 0 is off
-COUNTER=0
+#   - 0     - Coffee or Steam mode, 0 is coffee mode 1 is steam
+
 while read -r LINE; do
-  if echo "$LINE" | grep -Eq "[^,]+,[0-9]{3},[0-9]{3},[0-9]{3},[0-9]{4},[0-9]{1},[0-9]{1}"; then
-    if [[ $(echo "$LINE" | awk -F ',' '{print $7}') == 1 ]]; then
-      COUNTER=$((COUNTER + 1))
-    else
-      COUNTER=0
-    fi
-    echo "$(date +%s),$LINE,$COUNTER"
+  if echo "$LINE" | grep -Eq "[^,]+,\d{3},\d{3},\d{3},\d{4},\d{1}"; then
+    echo "$(date +%s),$LINE"
   else
     echo "Regex failed for line [$LINE]" >&2
   fi
