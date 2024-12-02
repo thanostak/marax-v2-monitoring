@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Sample LINE (latter from newer version)
 # C1.19,085,116,068,0000,0
@@ -16,9 +16,8 @@
 #   - 0     - Pump on or off. 1 is on 0 is off
 COUNTER=0
 while read -r LINE; do
-  if echo "$LINE" | grep -Eq "[^,]+,\d{3},\d{3},\d{3},\d{4},\d{1},\d{1}"; then
-    COUNTER_CHECK=$(echo "$LINE" | tr -d '\r' | cut -d',' -f7)
-    if [ "$COUNTER_CHECK" -eq 1 ]; then
+  if echo "$LINE" | grep -Eq "[^,]+,[0-9]{3},[0-9]{3},[0-9]{3},[0-9]{4},[0-9]{1},[0-9]{1}"; then
+    if [[ $(echo "$LINE" | awk -F ',' '{print $7}') == 1 ]]; then
       COUNTER=$((COUNTER + 1))
     else
       COUNTER=0
