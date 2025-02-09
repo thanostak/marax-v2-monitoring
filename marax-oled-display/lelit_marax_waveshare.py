@@ -1,14 +1,15 @@
-#!/usr/bin/python3
-# -*- coding:utf-8 -*-
-
-import sys
-import os
-import serial
-import logging
-import time
+#!/usr/bin/python3                                                                                                                                 
+# -*- coding:utf-8 -*-                                                                                                                               import sys                                                                                                                                         import os                                                                                                                                          import serial                                                                                                                                      import logging                                                                                                                                     from logging.handlers import RotatingFileHandler                                                                                                   import time
+import sys                                                                                                                                         import os                                                                                                                                          import serial                                                                                                                                      import logging                                                                                                                                     from logging.handlers import RotatingFileHandler                                                                                                   import time
 import traceback
 import re
 from PIL import Image, ImageDraw, ImageFont
+from datetime import datetime
+import pytz
+
+# Define the Amsterdam timezone
+amsterdam_tz = pytz.timezone('Europe/Amsterdam')
+
 
 picdir = os.path.join(
     os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "pic"
@@ -23,8 +24,11 @@ from waveshare_OLED import OLED_1in32
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 # Logging setup
+# Define log file path
+log_file = "/home/pi/marax-display/log_marax_display.log"
 
-ch = logging.FileHandler("/home/pi/marax-display/log_marax_display.log")
+# Create a rotating file handler (max size: 5MB, keep 2 old log files)
+ch = RotatingFileHandler(log_file, maxBytes=5*1024*1024, backupCount=3)
 ch.setLevel(logging.INFO)
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 ch.setFormatter(formatter)
@@ -57,9 +61,8 @@ is_pump_on = None
 
 usb_serial = serial.Serial("/dev/ttyUSB0", 9600, timeout=1)
 
-
 def temperature_to_string(val):
-    return "{}° C".format(val)
+  return "{}° C".format(val)
 
 
 def validate_input(input: list) -> bool:
@@ -122,15 +125,13 @@ def read_serial_safely(usb_serial):
         logging.error(f"Serial read error: {str(e)}")
         return None
 
-
 def draw_timer():
     global time_elapsed
-    font = ImageFont.truetype(os.path.join(picdir, "Font.ttc"), 60)
+    font = ImageFont.truetype(os.path.join(picdir, "Font.ttc"), 55)
     y = top
     line_t = "{}s".format(round(time_elapsed))
     if int(time_elapsed) > 5:
         draw.text((x, y), line_t, font=font, fill=13)
-
 
 while True:
     image = Image.new('L', (height, width), 0)
@@ -144,7 +145,7 @@ while True:
             individual_vals = read_vals.split(",")
             is_pump_on = int(individual_vals[6])
             if is_pump_on == 0:
-                logging.info(read_vals)
+                logging.debug(read_vals)
                 machine_on = 1
                 draw_stats(individual_vals)
                 time_elapsed = 0
@@ -157,10 +158,15 @@ while True:
                 draw_timer()
 
         else:
-            logging.error("Machine values error")
-            disp.clear()
-            # font = ImageFont.truetype(os.path.join(picdir, "Font.ttc"), 34)
-            # draw.text((x, top), "Error", font=font, fill=13)
+            font = ImageFont.truetype(os.path.join(picdir, "Font.ttc"), 34)
+            # Get current time in Amsterdam
+            current_time = datetime.now(amsterdam_tz)
+
+            # Format it to show only Hours and Minutes
+            formatted_time = current_time.strftime("%H:%M")
+
+            draw.text((x, top), formatted_time, font=font, fill=13)
+            time.sleep(10)
 
         # Display values
         time.sleep(0.1)
@@ -173,11 +179,14 @@ while True:
         exit()
 
     except IOError as e:
-        logging.info(e)
+        logging.error(e)
 
-    except IndexError:
-        logging.info("Machine is off")
+    except IndexError as e:
+        logging.error(e)
         machine_on = 0
+
+    except ValueError:
+        logging.error("Unsupported Value")
 
     except Exception as e:
         logging.error(e)
