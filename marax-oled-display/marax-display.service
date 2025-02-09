@@ -1,0 +1,14 @@
+[Unit]
+Description=Lelit MaraX Temperature Display Service
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/marax-display/python/example
+ExecStart=/usr/bin/python3 lelit_marax_waveshare.py
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
