@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding:utf-8 -*-
 
 import sys
@@ -41,9 +41,9 @@ disp.clear()
 # Get drawing object to draw on image.
 height = disp.height
 width = disp.width
-# draw.rectangle((0, 0, width, height), outline=0, fill=0)
-# rotated = image.rotate(rotation)
-# disp.ShowImage(disp.getbuffer(rotated))
+#draw.rectangle((0, 0, width, height), outline=0, fill=0)
+#rotated = image.rotate(rotation)
+#disp.ShowImage(disp.getbuffer(rotated))
 
 padding = 20
 top = padding
@@ -64,7 +64,7 @@ def temperature_to_string(val):
 
 def validate_input(input: list) -> bool:
     """Validates string matches pattern like: '+1.10', '117', '112', '095'"""
-    pattern = r"^\+1\.10$"
+    pattern = r'^\+1\.10$'
     if input is not None:
         first_value = input.split(",")[0]
         if re.match(pattern, first_value):
@@ -85,7 +85,7 @@ def draw_stats(individual_vals):
     0 - Pump Operating 0 = off, 1 = on.
     """
     try:
-        individual_vals = read_vals.split(",")
+        individual_vals = read_vals.split(',')
         current_steam_temp = int(individual_vals[1])
         target_steam_temp = int(individual_vals[2])
         current_hx_temp = int(individual_vals[3])
@@ -94,8 +94,7 @@ def draw_stats(individual_vals):
         line_1 = "T: {}".format(temperature_to_string(current_hx_temp))
         line_2 = "Heating: {}".format("On" if is_heating_element_on else "Off")
         line_3 = "S: {}/{}".format(
-            temperature_to_string(current_steam_temp),
-            temperature_to_string(target_steam_temp),
+            temperature_to_string(current_steam_temp),temperature_to_string(target_steam_temp)
         )
     except IndexError:
         line_1 = ""
@@ -126,14 +125,15 @@ def read_serial_safely(usb_serial):
 
 def draw_timer():
     global time_elapsed
-    font = ImageFont.truetype(os.path.join(picdir, "Font.ttc"), 50)
+    font = ImageFont.truetype(os.path.join(picdir, "Font.ttc"), 60)
     y = top
-    line_t = "{}s".format(time_elapsed)
-    draw.text((x, y), line_t, font=font, fill=13)
+    line_t = "{}s".format(round(time_elapsed))
+    if int(time_elapsed) > 5:
+        draw.text((x, y), line_t, font=font, fill=13)
 
 
 while True:
-    image = Image.new("L", (height, width), 0)
+    image = Image.new('L', (height, width), 0)
     rotation = -90
     draw = ImageDraw.Draw(image)
     draw.rectangle((0, 0, width, height), outline=0, fill=0)
@@ -158,8 +158,9 @@ while True:
 
         else:
             logging.error("Machine values error")
-            font = ImageFont.truetype(os.path.join(picdir, "Font.ttc"), 34)
-            draw.text((x, top), "Error", font=font, fill=13)
+            disp.clear()
+            # font = ImageFont.truetype(os.path.join(picdir, "Font.ttc"), 34)
+            # draw.text((x, top), "Error", font=font, fill=13)
 
         # Display values
         time.sleep(0.1)
